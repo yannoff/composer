@@ -16,7 +16,7 @@ use Composer\Config\JsonConfigSource;
 use Composer\Installer;
 use Composer\Plugin\CommandEvent;
 use Composer\Plugin\PluginEvents;
-use Composer\Json\JsonFile;
+use Composer\Json\YamlFile;
 use Composer\Factory;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -68,7 +68,7 @@ EOT
 
         $file = Factory::getComposerFile();
 
-        $jsonFile = new JsonFile($file);
+        $jsonFile = new YamlFile($file);
         $composer = $jsonFile->read();
         $composerBackup = file_get_contents($jsonFile->getPath());
 

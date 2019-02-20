@@ -14,7 +14,7 @@ namespace Composer\Command;
 
 use Composer\DependencyResolver\Pool;
 use Composer\Factory;
-use Composer\Json\JsonFile;
+use Composer\Json\YamlFile;
 use Composer\Package\BasePackage;
 use Composer\Package\Version\VersionParser;
 use Composer\Package\Version\VersionSelector;
@@ -117,7 +117,7 @@ EOT
             }
         }
 
-        $file = new JsonFile(Factory::getComposerFile());
+        $file = new YamlFile(Factory::getComposerFile());
         $json = $file->encode($options);
 
         if ($input->isInteractive()) {

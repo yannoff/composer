@@ -18,7 +18,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Factory;
 use Composer\Installer;
-use Composer\Json\JsonFile;
+use Composer\Json\YamlFile;
 use Composer\Json\JsonManipulator;
 use Composer\Package\Version\VersionParser;
 use Composer\Plugin\CommandEvent;
@@ -111,7 +111,7 @@ EOT
             file_put_contents($this->file, "{\n}\n");
         }
 
-        $this->json = new JsonFile($this->file);
+        $this->json = new YamlFile($this->file);
         $this->composerBackup = file_get_contents($this->json->getPath());
 
         $composer = $this->getComposer(true, $input->getOption('no-plugins'));

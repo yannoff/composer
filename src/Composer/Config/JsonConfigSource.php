@@ -12,7 +12,7 @@
 
 namespace Composer\Config;
 
-use Composer\Json\JsonFile;
+use Composer\Json\YamlFile;
 use Composer\Json\JsonManipulator;
 use Composer\Util\Silencer;
 
@@ -25,7 +25,7 @@ use Composer\Util\Silencer;
 class JsonConfigSource implements ConfigSourceInterface
 {
     /**
-     * @var JsonFile
+     * @var YamlFile
      */
     private $file;
 
@@ -37,10 +37,10 @@ class JsonConfigSource implements ConfigSourceInterface
     /**
      * Constructor
      *
-     * @param JsonFile $file
+     * @param YamlFile $file
      * @param bool     $authConfig
      */
-    public function __construct(JsonFile $file, $authConfig = false)
+    public function __construct(YamlFile $file, $authConfig = false)
     {
         $this->file = $file;
         $this->authConfig = $authConfig;

@@ -13,7 +13,9 @@
 namespace Composer;
 
 use Composer\Config\JsonConfigSource;
+use Composer\IO\Yaml\YamlParser;
 use Composer\Json\JsonFile;
+use Composer\Json\YamlFile;
 use Composer\IO\IOInterface;
 use Composer\Package\Archiver;
 use Composer\Package\Version\VersionGuesser;
@@ -36,6 +38,8 @@ use Composer\Autoload\AutoloadGenerator;
 use Composer\Package\Version\VersionParser;
 use Composer\Downloader\TransportException;
 use Seld\JsonLint\JsonParser;
+use Symfony\Component\Yaml\Parser;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Creates a configured instance of composer.
@@ -219,7 +223,7 @@ class Factory
 
     public static function getComposerFile()
     {
-        return trim(getenv('COMPOSER')) ?: './composer.json';
+        return trim(getenv('COMPOSER')) ?: './composer.yml';
     }
 
     public static function createAdditionalStyles()
@@ -275,10 +279,10 @@ class Factory
         if (is_string($localConfig)) {
             $composerFile = $localConfig;
 
-            $file = new JsonFile($localConfig, null, $io);
+            $file = new YamlFile($localConfig, null, $io);
 
             if (!$file->exists()) {
-                if ($localConfig === './composer.json' || $localConfig === 'composer.json') {
+                if ($localConfig === './composer.yml' || $localConfig === 'composer.yml') {
                     $message = 'Composer could not find a composer.json file in '.$cwd;
                 } else {
                     $message = 'Composer could not find the config file: '.$localConfig;
@@ -289,8 +293,9 @@ class Factory
 
             $file->validateSchema(JsonFile::LAX_SCHEMA);
             $jsonParser = new JsonParser;
+            $yamlParser = new YamlParser();
             try {
-                $jsonParser->parse(file_get_contents($localConfig), JsonParser::DETECT_KEY_CONFLICTS);
+                $yamlParser->parse(file_get_contents($localConfig));
             } catch (DuplicateKeyException $e) {
                 $details = $e->getDetails();
                 $io->writeError('<warning>Key '.$details['key'].' is a duplicate in '.$localConfig.' at line '.$details['line'].'</warning>');
@@ -304,7 +309,7 @@ class Factory
         $config->merge($localConfig);
         if (isset($composerFile)) {
             $io->writeError('Loading config file ' . $composerFile, true, IOInterface::DEBUG);
-            $config->setConfigSource(new JsonConfigSource(new JsonFile(realpath($composerFile), null, $io)));
+            $config->setConfigSource(new JsonConfigSource(new YamlFile(realpath($composerFile), null, $io)));
 
             $localAuthFile = new JsonFile(dirname(realpath($composerFile)) . '/auth.json', null, $io);
             if ($localAuthFile->exists()) {
